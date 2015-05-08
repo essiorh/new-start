@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PageArt"
+            android:label="@string/title_activity_page_art" >
+        </activity>
     </application>
 
 </manifest>

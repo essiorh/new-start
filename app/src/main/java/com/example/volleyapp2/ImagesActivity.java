@@ -1,5 +1,6 @@
 package com.example.volleyapp2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -63,14 +65,27 @@ public class ImagesActivity extends ActionBarActivity {
      */
     public static class ImagesFragment extends Fragment {
         private ArticleAdapter mAdapter;
+
+
         public ImagesFragment() {
         }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_images, container, false);
-        }
-        @Override
+            View view	= inflater.inflate(R.layout.fragment_images, container, false);
+            ListView listView=(ListView)view.findViewById(R.id.list1);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View view,
+                                       int position, long id) {
+
+                    Intent i = new Intent(getActivity(), PageArt.class);
+                    i.putExtra("position", position);
+                    startActivity(i);
+                }
+            });
+                return inflater.inflate(R.layout.fragment_images,container,false);
+            }
+            @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             mAdapter = new ArticleAdapter(getActivity());
