@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,13 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PopitkaFragment extends Fragment {
+public class PopitkaFragment extends Fragment{
     private ArticleAdapter mAdapter;
+    private SwipeRefreshLayout  swipeRefreshLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view	= inflater.inflate(R.layout.fragment_popitka, container, false);
         ListView listView=(ListView)view.findViewById(R.id.list1);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -41,6 +44,14 @@ public class PopitkaFragment extends Fragment {
                 Intent i = new Intent(getActivity(), PageArt.class);
                 i.putExtra("position", position);
                 startActivity(i);
+
+            }
+        });
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
 
             }
         });
