@@ -15,14 +15,15 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,15 +41,12 @@ public class ImagesActivity extends ActionBarActivity {
                     .commit();
         }
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.images, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -60,50 +58,55 @@ public class ImagesActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     /**
      * A placeholder fragment containing a simple view.
      */
     public static class ImagesFragment extends Fragment {
-
         private ArticleAdapter mAdapter;
-
         public ImagesFragment() {
         }
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             return inflater.inflate(R.layout.fragment_images, container, false);
         }
-
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-
             mAdapter = new ArticleAdapter(getActivity());
-
             ListView listView = (ListView) getView().findViewById(R.id.list1);
             listView.setAdapter(mAdapter);
-
             fetch();
         }
-
         private void fetch() {
-            StringRequest request = new StringRequest(Request.Method.GET, "live.goodline.info",
+            StringRequest request = new StringRequest(Request.Method.GET, "http://live.goodline.info/guest",
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String data) {
                             Document doc = Jsoup.parse(data);
-                            try {
-                                List<Article> Articles = parse(jsonObject);
+                            List<Article> Articles=new ArrayList<>();
 
+                                Elements metaElems = (Elements) doc.getElementsByTag("meta");
+                                for(Element thisArt :metaElems) {
+                                    String title=thisArt.select("h2").text();
+                                    String url=thisArt.select("img").attr("src");
+                                    String s=thisArt.select("time").attr("datetime").toString();
+                                    SimpleDateFormat format = new SimpleDateFormat();
+                                    format.applyPattern("dd.MM.yyyy");
+                                    Date dt=new Date(System.currentTimeMillis());
+                                    try {
+                                        dt= format.parse(s);
+                                    } catch (ParseException ex) {
+                                        System.out.println("Это не должно произойти");
+                                    }
+
+                                    Article art=new Article(title,url,dt);
+
+                                    Articles.add(art);
+                                }
                                 mAdapter.swapArticleRecords(Articles);
                             }
-                            catch(JSONException e) {
-                                Toast.makeText(getActivity(), "Unable to parse data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
+
                     },
                     new Response.ErrorListener() {
                         @Override
@@ -112,47 +115,7 @@ public class ImagesActivity extends ActionBarActivity {
                         }
                     }
             );
-            StringRequest request = new StringRequest(
-                    "http://cblunt.github.io/blog-android-volley/response2.json",
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject jsonObject) {
-                            try {
-                                List<Article> Articles = parse(jsonObject);
-
-                                mAdapter.swapArticleRecords(Articles);
-                            }
-                            catch(JSONException e) {
-                                Toast.makeText(getActivity(), "Unable to parse data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            Toast.makeText(getActivity(), "Unable to fetch data: " + volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
             VolleyApplication.getInstance().getRequestQueue().add(request);
-        }
-
-        private List<Article> parse(JSONObject json) throws JSONException {
-            ArrayList<Article> records = new ArrayList<Article>();
-
-            JSONArray jsonImages = json.getJSONArray("images");
-
-            for(int i =0; i < jsonImages.length(); i++) {
-                JSONObject jsonImage = jsonImages.getJSONObject(i);
-                String title = jsonImage.getString("title");
-                String url = jsonImage.getString("url");
-                Date dt =new Date();
-
-                Article record = new Article(url, title,dt);
-                records.add(record);
-            }
-
-            return records;
         }
     }
 }

@@ -12,6 +12,8 @@ public class Article {
         this.title = title;
         this.dat=dat;
     }
+    public Article() {
+    }
 
     public String getTitle() {
         return title;
