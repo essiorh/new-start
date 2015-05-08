@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
@@ -30,12 +32,12 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         // NOTE: You would normally use the ViewHolder pattern here
         NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
         TextView textView = (TextView) convertView.findViewById(R.id.text1);
-
+        TextView dateView=(TextView)convertView.findViewById(R.id.date1);
         Article imageRecord = getItem(position);
 
         imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
         textView.setText(imageRecord.getTitle());
-
+        dateView.setText(imageRecord.getDat());
         return convertView;
     }
 

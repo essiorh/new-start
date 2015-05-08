@@ -86,27 +86,16 @@ public class ImagesActivity extends ActionBarActivity {
                             Document doc = Jsoup.parse(data);
                             List<Article> Articles=new ArrayList<>();
 
-                                Elements metaElems = (Elements) doc.getElementsByTag("article");
+                                Elements metaElems =doc.getElementsByTag("article");
                                 for(Element thisArt :metaElems) {
                                     String title=thisArt.select("h2").text();
                                     String url=thisArt.select("img").attr("src");
-                                    String s=thisArt.select("time").attr("datetime").toString();
-                                    SimpleDateFormat format = new SimpleDateFormat();
-                                    format.applyPattern("dd.MM.yyyy");
-                                    Date dt=new Date(System.currentTimeMillis());
-                                    try {
-                                        dt= format.parse(s);
-                                    } catch (ParseException ex) {
-                                        System.out.println("Это не должно произойти");
-                                    }
-
+                                    String dt=thisArt.select("time").text();
                                     Article art=new Article(url,title,dt);
-
                                     Articles.add(art);
                                 }
                                 mAdapter.swapArticleRecords(Articles);
                             }
-
                     },
                     new Response.ErrorListener() {
                         @Override

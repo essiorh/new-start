@@ -5,9 +5,9 @@ import java.util.Date;
 public class Article {
     private String url;
     private String title;
-    private Date dat;
+    private String dat;
 
-    public Article(String url, String title,Date dat) {
+    public Article(String url, String title,String dat) {
         this.url = url;
         this.title = title;
         this.dat=dat;
@@ -22,7 +22,7 @@ public class Article {
     public String getUrl() {
         return url;
     }
-    public Date getDat(){
+    public String getDat(){
         return dat;
     }
 }
