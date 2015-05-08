@@ -1,12 +1,16 @@
 package com.example.volleyapp2;
 
-public class ImageRecord {
+import java.util.Date;
+
+public class Article {
     private String url;
     private String title;
+    private Date dat;
 
-    public ImageRecord(String url, String title) {
+    public Article(String url, String title,Date dat) {
         this.url = url;
         this.title = title;
+        this.dat=dat;
     }
 
     public String getTitle() {
@@ -15,5 +19,8 @@ public class ImageRecord {
 
     public String getUrl() {
         return url;
+    }
+    public Date getDat(){
+        return dat;
     }
 }

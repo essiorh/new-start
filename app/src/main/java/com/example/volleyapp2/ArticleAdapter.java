@@ -12,10 +12,10 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.List;
 
-public class ImageRecordsAdapter extends ArrayAdapter<ImageRecord> {
+public class ArticleAdapter extends ArrayAdapter<Article> {
     private ImageLoader mImageLoader;
 
-    public ImageRecordsAdapter(Context context) {
+    public ArticleAdapter(Context context) {
         super(context, R.layout.image_list_item);
 
         mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
@@ -31,7 +31,7 @@ public class ImageRecordsAdapter extends ArrayAdapter<ImageRecord> {
         NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
         TextView textView = (TextView) convertView.findViewById(R.id.text1);
 
-        ImageRecord imageRecord = getItem(position);
+        Article imageRecord = getItem(position);
 
         imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
         textView.setText(imageRecord.getTitle());
@@ -39,10 +39,10 @@ public class ImageRecordsAdapter extends ArrayAdapter<ImageRecord> {
         return convertView;
     }
 
-    public void swapImageRecords(List<ImageRecord> objects) {
+    public void swapArticleRecords(List<Article> objects) {
         clear();
 
-        for(ImageRecord object : objects) {
+        for(Article object : objects) {
             add(object);
         }
 
