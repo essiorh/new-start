@@ -86,7 +86,7 @@ public class ImagesActivity extends ActionBarActivity {
                             Document doc = Jsoup.parse(data);
                             List<Article> Articles=new ArrayList<>();
 
-                                Elements metaElems = (Elements) doc.getElementsByTag("meta");
+                                Elements metaElems = (Elements) doc.getElementsByTag("article");
                                 for(Element thisArt :metaElems) {
                                     String title=thisArt.select("h2").text();
                                     String url=thisArt.select("img").attr("src");
@@ -100,7 +100,7 @@ public class ImagesActivity extends ActionBarActivity {
                                         System.out.println("Это не должно произойти");
                                     }
 
-                                    Article art=new Article(title,url,dt);
+                                    Article art=new Article(url,title,dt);
 
                                     Articles.add(art);
                                 }
