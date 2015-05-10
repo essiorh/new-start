@@ -45,7 +45,10 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                     int position, long id) {
 
                 Intent i = new Intent(getActivity(), PageArt.class);
-                i.putExtra("position", position);
+                Article currentNews = mAdapter.getItem(position);
+
+                i.putExtra("uri", currentNews.getUri());
+                i.putExtra("title", currentNews.getTitle());
                 startActivity(i);
 
             }
@@ -76,36 +79,37 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
         fetch(true);
     }
     private void fetch(boolean DownOrUp) {
-        String thisZapros=getString(R.string.adress);
-if(Articles.size()!=0) {
-    int kratn=Articles.size()/10;
-thisZapros+=String.format("/page%d/",kratn);
-}
-    StringRequest request = new StringRequest(Request.Method.GET, thisZapros,
-            new Response.Listener<String>() {
-                @Override
-                public void onResponse(String data) {
-                    Document doc = Jsoup.parse(data);
+        String thisZapros = getString(R.string.adress);
+        if (Articles.size() != 0) {
+            int kratn = Articles.size() / 10;
+            thisZapros += String.format("/page%d/", kratn);
+        }
+        StringRequest request = new StringRequest(Request.Method.GET, thisZapros,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String data) {
+                        Document doc = Jsoup.parse(data);
 
-                    Elements metaElems = doc.getElementsByTag("article");
-                    for (Element thisArt : metaElems) {
-                        String title = thisArt.select("h2").text();
-                        String url = thisArt.select("img").attr("src");
-                        String dt = thisArt.select("time").text();
-                        Article art = new Article(url, title, dt);
-                        Articles.add(art);
+                        Elements metaElems = doc.getElementsByTag("article");
+                        for (Element thisArt : metaElems) {
+                            String title = thisArt.select("h2").text();
+                            String url = thisArt.select("img").attr("src");
+                            String dt = thisArt.select("time").text();
+                            String uri = thisArt.select("h2").select("a").attr("href");
+                            Article art = new Article(url, title, dt, uri);
+                            Articles.add(art);
+                        }
+                        mAdapter.swapArticleRecords(Articles);
                     }
-                    mAdapter.swapArticleRecords(Articles);
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        // Handle error
+                    }
                 }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    // Handle error
-                }
-            }
-    );
-    VolleyApplication.getInstance().getRequestQueue().add(request);
+        );
+        VolleyApplication.getInstance().getRequestQueue().add(request);
 
     }
     public abstract class InfiniteScrollListener implements AbsListView.OnScrollListener {
