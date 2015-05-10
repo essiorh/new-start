@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -31,6 +32,8 @@ import java.util.List;
 public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private ArticleAdapter mAdapter;
     private SwipeRefreshLayout  swipeRefreshLayout;
+    private List<Article> Articles=new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,6 +48,13 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 i.putExtra("position", position);
                 startActivity(i);
 
+            }
+        });
+        listView.setOnScrollListener(new InfiniteScrollListener(10) {
+
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                fetch(true);
             }
         });
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
@@ -63,34 +73,77 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
         mAdapter = new ArticleAdapter(getActivity());
         ListView listView = (ListView) getView().findViewById(R.id.list1);
         listView.setAdapter(mAdapter);
-        fetch();
+        fetch(true);
     }
-    private void fetch() {
-        StringRequest request = new StringRequest(Request.Method.GET, getString(R.string.adress),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String data) {
-                        Document doc = Jsoup.parse(data);
-                        List<Article> Articles=new ArrayList<>();
+    private void fetch(boolean DownOrUp) {
+        String thisZapros=getString(R.string.adress);
+if(Articles.size()!=0) {
+    int kratn=Articles.size()/10;
+thisZapros+=String.format("/page%d/",kratn);
+}
+    StringRequest request = new StringRequest(Request.Method.GET, thisZapros,
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String data) {
+                    Document doc = Jsoup.parse(data);
 
-                        Elements metaElems =doc.getElementsByTag("article");
-                        for(Element thisArt :metaElems) {
-                            String title=thisArt.select("h2").text();
-                            String url=thisArt.select("img").attr("src");
-                            String dt=thisArt.select("time").text();
-                            Article art=new Article(url,title,dt);
-                            Articles.add(art);
-                        }
-                        mAdapter.swapArticleRecords(Articles);
+                    Elements metaElems = doc.getElementsByTag("article");
+                    for (Element thisArt : metaElems) {
+                        String title = thisArt.select("h2").text();
+                        String url = thisArt.select("img").attr("src");
+                        String dt = thisArt.select("time").text();
+                        Article art = new Article(url, title, dt);
+                        Articles.add(art);
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        // Handle error
-                    }
+                    mAdapter.swapArticleRecords(Articles);
                 }
-        );
-        VolleyApplication.getInstance().getRequestQueue().add(request);
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    // Handle error
+                }
+            }
+    );
+    VolleyApplication.getInstance().getRequestQueue().add(request);
+
+    }
+    public abstract class InfiniteScrollListener implements AbsListView.OnScrollListener {
+        private int bufferItemCount = 10;
+        private int currentPage = 0;
+        private int itemCount = 0;
+        private boolean isLoading = true;
+
+        public InfiniteScrollListener(int bufferItemCount) {
+            this.bufferItemCount = bufferItemCount;
+        }
+
+        public abstract void loadMore(int page, int totalItemsCount);
+
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            // Do Nothing
+        }
+
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            if (totalItemCount < itemCount) {
+                this.itemCount = totalItemCount;
+                if (totalItemCount == 0) {
+                    this.isLoading = true; }
+            }
+
+            if (isLoading && (totalItemCount > itemCount)) {
+                isLoading = false;
+                itemCount = totalItemCount;
+                currentPage++;
+            }
+
+            if (!isLoading && (totalItemCount - visibleItemCount)<=(firstVisibleItem + bufferItemCount)) {
+                loadMore(currentPage + 1, totalItemCount);
+                isLoading = true;
+            }
+        }
     }
 }
