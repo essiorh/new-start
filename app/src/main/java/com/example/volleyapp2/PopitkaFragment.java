@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PopitkaFragment extends Fragment{
+public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     private ArticleAdapter mAdapter;
     private SwipeRefreshLayout  swipeRefreshLayout;
     @Override
@@ -48,14 +48,14 @@ public class PopitkaFragment extends Fragment{
             }
         });
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
-            }
-        });
         return view;
+    }
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+
     }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class PopitkaFragment extends Fragment{
         fetch();
     }
     private void fetch() {
-        StringRequest request = new StringRequest(Request.Method.GET, "http://live.goodline.info/guest",
+        StringRequest request = new StringRequest(Request.Method.GET, getString(R.string.adress),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String data) {

@@ -7,19 +7,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class Popitka extends AppCompatActivity {
+public class PageArt extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_popitka);
+        setContentView(R.layout.activity_page_art);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_popitka, menu);
+        getMenuInflater().inflate(R.menu.menu_page_art, menu);
         return true;
     }
 
