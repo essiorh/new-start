@@ -34,9 +34,8 @@ public class PageArtFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view			= inflater.inflate(R.layout.fragment_page_art, container, false);
         htmlTextView = (TextView) view.findViewById(R.id.html_text);
-        //tvTitle				= (TextView) view.findViewById(R.id.tvNewsFragmentTitle);
-        //tvNewsBody			= (TextView) view.findViewById(R.id.tvNewsFragmentBody);
-        // извлекаем ссылку на статью
+
+
         Intent intent		= getActivity().getIntent();
         String urik		= intent.getStringExtra("uri");
         String newsTitle	= intent.getStringExtra("title");
@@ -44,16 +43,10 @@ public class PageArtFragment extends Fragment {
         if(rod != null)
             rod.setTitle(newsTitle);
         fetch(urik);
-        //tvTitle.setText(newsTitle);
-        //tvNewsBody.setText(""); // для удобства настройки расположения элемента
-
-
-        //getPageContent(newsUrl);
         return view;
     }
 
     private void fetch(String uri) {
-
         StringRequest request = new StringRequest(Request.Method.GET, uri,
                 new Response.Listener<String>() {
                     @Override
