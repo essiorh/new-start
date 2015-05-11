@@ -48,6 +48,6 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             add(object);
         }
 
-        notifyDataSetChanged();
+
     }
 }
