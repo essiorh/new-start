@@ -110,7 +110,7 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void fetch() {
         String thisZapros = getString(R.string.adress);
         if (Articles.size() >9) {
-            int kratn = Articles.size() / 10+5;
+            int kratn = Articles.size() / 10+1;
             thisZapros += String.format("/page%d/", kratn);
         }
         StringRequest request = new StringRequest(Request.Method.GET, thisZapros,
