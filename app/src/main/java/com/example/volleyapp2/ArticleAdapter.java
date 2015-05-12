@@ -35,7 +35,10 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         TextView dateView=(TextView)convertView.findViewById(R.id.date1);
         Article imageRecord = getItem(position);
 
+        if (imageRecord.getUrl()!="")
         imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
+        else
+            imageView.setImageResource(R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main);
         textView.setText(imageRecord.getTitle());
         dateView.setText(imageRecord.getDat());
         return convertView;

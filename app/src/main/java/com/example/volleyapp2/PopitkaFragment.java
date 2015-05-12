@@ -110,7 +110,7 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private void fetch() {
         String thisZapros = getString(R.string.adress);
         if (Articles.size() >9) {
-            int kratn = Articles.size() / 10+1;
+            int kratn = Articles.size() / 10+5;
             thisZapros += String.format("/page%d/", kratn);
         }
         StringRequest request = new StringRequest(Request.Method.GET, thisZapros,
@@ -141,7 +141,11 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Elements metaElems = doc.getElementsByTag("article");
         for (Element thisArt : metaElems) {
             String title = thisArt.select("h2").text();
-            String url = thisArt.select("img").attr("src");
+            String url;
+            if (!thisArt.getElementsByClass("preview").isEmpty())
+                url = thisArt.select("img").attr("src");
+            else
+                url="";
             String dt = thisArt.select("time").text();
             String uri = thisArt.select("h2").select("a").attr("href");
             Article art = new Article(url, title, dt, uri);
