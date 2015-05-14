@@ -10,11 +10,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name=".ImagesActivity"
-            android:label="@string/app_name" >
 
-        </activity>
         <activity
             android:name=".PageArt"
             android:label="@string/title_activity_page_art" >
@@ -29,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".serv" />
     </application>
 
 </manifest>

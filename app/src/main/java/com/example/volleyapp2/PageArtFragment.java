@@ -51,7 +51,6 @@ import java.util.WeakHashMap;
  */
 
 public class PageArtFragment extends Fragment {
-    static final Map<String, WeakReference<Drawable>> mDrawableCache = Collections.synchronizedMap(new WeakHashMap<String, WeakReference<Drawable>>());
     public PageArtFragment() {
     }
     TextView htmlTextView;
