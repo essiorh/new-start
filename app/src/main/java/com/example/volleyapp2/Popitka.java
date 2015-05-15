@@ -38,6 +38,8 @@ public class Popitka extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popitka);
+        Intent intent=new Intent(this,MyService.class);
+        startService(intent);
     }
 
 

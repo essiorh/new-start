@@ -1,3 +1,4 @@
+
 package com.example.volleyapp2;
 
 import android.app.IntentService;
@@ -29,29 +30,29 @@ import java.util.concurrent.TimeUnit;
             sendNotif();
         }
         void sendNotif() {
-            // 1-я часть
+            // 1-СЏ С‡Р°СЃС‚СЊ
             Notification notif = new Notification(R.drawable.ic_launcher, "Text in status bar",
                     System.currentTimeMillis());
 
-            // 3-я часть
+            // 3-СЏ С‡Р°СЃС‚СЊ
             Intent intent = new Intent(this, PageArt.class);
-            intent.putExtra("title", "Почему надо сходить на GLO");
+            intent.putExtra("title", "РџРѕС‡РµРјСѓ РЅР°РґРѕ СЃС…РѕРґРёС‚СЊ РЅР° GLO");
             intent.putExtra("uri","http://live.goodline.info/blog/Good_Line/2814.html");
             PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0); // Подробное описание смотреть в UPD к статье
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0); // РџРѕРґСЂРѕР±РЅРѕРµ РѕРїРёСЃР°РЅРёРµ СЃРјРѕС‚СЂРµС‚СЊ РІ UPD Рє СЃС‚Р°С‚СЊРµ
             RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.note);
 
-            // 2-я часть
+            // 2-СЏ С‡Р°СЃС‚СЊ
             notif.setLatestEventInfo(this, "Notification's title", "Notification's text", pIntent);
 
-            // ставим флаг, чтобы уведомление пропало после нажатия
+            // СЃС‚Р°РІРёРј С„Р»Р°Рі, С‡С‚РѕР±С‹ СѓРІРµРґРѕРјР»РµРЅРёРµ РїСЂРѕРїР°Р»Рѕ РїРѕСЃР»Рµ РЅР°Р¶Р°С‚РёСЏ
             notif.flags |= Notification.FLAG_AUTO_CANCEL;
-            contentView.setImageViewResource(R.id.image, R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main); // Привязываем нашу картинку к ImageView в разметке уведомления
-            contentView.setTextViewText(R.id.text, "Почему надо сходить на GLO"); // Привязываем текст к TextView в нашей разметке
+            contentView.setImageViewResource(R.id.image, R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main); // РџСЂРёРІСЏР·С‹РІР°РµРј РЅР°С€Сѓ РєР°СЂС‚РёРЅРєСѓ Рє ImageView РІ СЂР°Р·РјРµС‚РєРµ СѓРІРµРґРѕРјР»РµРЅРёСЏ
+            contentView.setTextViewText(R.id.text, "РџРѕС‡РµРјСѓ РЅР°РґРѕ СЃС…РѕРґРёС‚СЊ РЅР° GLO"); // РџСЂРёРІСЏР·С‹РІР°РµРј С‚РµРєСЃС‚ Рє TextView РІ РЅР°С€РµР№ СЂР°Р·РјРµС‚РєРµ
 
-            notif.contentIntent = contentIntent; // Присваиваем contentIntent нашему уведомлению
-            notif.contentView = contentView; // Присваиваем contentView нашему уведомлению
-            // отправляем
+            notif.contentIntent = contentIntent; // РџСЂРёСЃРІР°РёРІР°РµРј contentIntent РЅР°С€РµРјСѓ СѓРІРµРґРѕРјР»РµРЅРёСЋ
+            notif.contentView = contentView; // РџСЂРёСЃРІР°РёРІР°РµРј contentView РЅР°С€РµРјСѓ СѓРІРµРґРѕРјР»РµРЅРёСЋ
+            // РѕС‚РїСЂР°РІР»СЏРµРј
             nm.notify(1, notif);
 
         }
