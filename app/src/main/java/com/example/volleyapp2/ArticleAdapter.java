@@ -1,6 +1,8 @@
 package com.example.volleyapp2;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,25 +11,29 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class ArticleAdapter extends ArrayAdapter<Article> {
     private ImageLoader mImageLoader;
-
+    private Picasso mPicasso;
     public ArticleAdapter(Context context) {
         super(context, R.layout.image_list_item);
-
-        mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
+        mPicasso=Picasso.with(context.getApplicationContext());
+        //mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.image_list_item, parent, false);
+
         }
+
 
         // NOTE: You would normally use the ViewHolder pattern here
         NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
@@ -36,7 +42,8 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         Article imageRecord = getItem(position);
 
         if (imageRecord.getUrl()!="")
-        imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
+            mPicasso.load(imageRecord.getUrl()).into(imageView);
+        //imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
         else
             imageView.setImageResource(R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main);
         textView.setText(imageRecord.getTitle());

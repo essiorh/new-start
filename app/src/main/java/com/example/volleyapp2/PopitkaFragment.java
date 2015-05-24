@@ -1,6 +1,8 @@
 package com.example.volleyapp2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -33,7 +35,8 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private ArticleAdapter mAdapter;
     private SwipeRefreshLayout  swipeRefreshLayout;
     private List<Article> Articles=new ArrayList<>();
-
+    private SharedPreferences sharedPreferences;
+    final String SAVED_FIRST_NEW = "saved_first_new";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,7 +52,7 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                 i.putExtra("uri", currentNews.getUri());
                 i.putExtra("title", currentNews.getTitle());
-                i.putExtra("url",currentNews.getUrl());
+                i.putExtra("url", currentNews.getUrl());
                 startActivity(i);
 
             }
@@ -58,6 +61,14 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             @Override
             public void loadMore(int page, int totalItemsCount) {
+                /*sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                String savedText = sharedPreferences.getString(SAVED_FIRST_NEW, "");
+                if (!savedText.equals(mAdapter.getItem(0).getDat())) {
+                    sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(SAVED_FIRST_NEW, mAdapter.getItem(0).getDat());
+                    editor.commit();
+                }*/
                 fetch();
             }
         });
