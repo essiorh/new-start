@@ -1,8 +1,11 @@
 package com.example.volleyapp2;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -36,6 +40,7 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private SwipeRefreshLayout  swipeRefreshLayout;
     private List<Article> Articles=new ArrayList<>();
     private SharedPreferences sharedPreferences;
+    private PendingIntent pendingIntent;
     final String SAVED_FIRST_NEW = "saved_first_new";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,21 +66,36 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                /*sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+                sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
                 String savedText = sharedPreferences.getString(SAVED_FIRST_NEW, "");
                 if (!savedText.equals(mAdapter.getItem(0).getDat())) {
                     sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(SAVED_FIRST_NEW, mAdapter.getItem(0).getDat());
                     editor.commit();
-                }*/
+                }
                 fetch();
             }
         });
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
-
+        Intent intent=getActivity().getIntent();
+        String title=intent.getAction();
+        if (!title.equals(null)) {
+            if (title.equals("show_news")){
+                Intent i = new Intent(getActivity(), PageArt.class);
+                i.putExtra("uri", intent.getStringExtra("uri"));
+                i.putExtra("title", intent.getStringExtra("title"));
+                startActivity(i);
+            }
+        }
         return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
     }
     @Override
     public void onRefresh() {
@@ -116,6 +136,14 @@ public class PopitkaFragment extends Fragment implements SwipeRefreshLayout.OnRe
         ListView listView = (ListView) getView().findViewById(R.id.list1);
         listView.setAdapter(mAdapter);
         fetch();
+
+        Intent myIntent = new Intent(getActivity(), MyReceiver.class);
+
+        pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC, SystemClock.elapsedRealtime(),10000, pendingIntent);
+
     }
 
     private void fetch() {

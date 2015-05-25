@@ -24,12 +24,12 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
     public ArticleAdapter(Context context) {
         super(context, R.layout.image_list_item);
         mPicasso=Picasso.with(context.getApplicationContext());
-        //mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
+        mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) {
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.image_list_item, parent, false);
 
         }
@@ -38,12 +38,15 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         // NOTE: You would normally use the ViewHolder pattern here
         NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
         TextView textView = (TextView) convertView.findViewById(R.id.text1);
-        TextView dateView=(TextView)convertView.findViewById(R.id.date1);
+        TextView dateView = (TextView) convertView.findViewById(R.id.date1);
         Article imageRecord = getItem(position);
 
-        if (imageRecord.getUrl()!="")
-            mPicasso.load(imageRecord.getUrl()).into(imageView);
-        //imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
+        if (imageRecord.getUrl() != "")
+            //mPicasso.load(imageRecord.getUrl()).into(imageView);
+
+                imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
+
+            //
         else
             imageView.setImageResource(R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main);
         textView.setText(imageRecord.getTitle());
