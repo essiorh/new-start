@@ -1,52 +1,40 @@
 
-package com.example.volleyapp2;
+package com.example.volleyapp2.background;
 
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
-import com.squareup.picasso.Picasso;
+import com.example.volleyapp2.adapters.Article;
+import com.example.volleyapp2.activities.ActivityMain;
+import com.example.volleyapp2.R;
+import com.example.volleyapp2.methods.VolleyApplication;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
     public class MyService extends IntentService {
         NotificationManager nm;
         private SharedPreferences sharedPreferences;
         final String SAVED_FIRST_NEW = "saved_first_new";
-        private ImageLoader mImageLoader;
         private ArrayList<Article> artList=new ArrayList<>();
 
 
@@ -61,7 +49,6 @@ import java.util.concurrent.TimeUnit;
         @Override
         public IBinder onBind(Intent arg0)
         {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -93,13 +80,11 @@ import java.util.concurrent.TimeUnit;
                 Log.d("mylog",e.getLocalizedMessage());
             }
 
-            String stredf="";
+            String stredf=null;
             if (stateNotif) {
                 stredf = artList.get(0).getDat();
                 sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
                 String savedText = sharedPreferences.getString(SAVED_FIRST_NEW, "");
-                //sharedPreferences.edit().clear().commit();
-
                 if (!savedText.equals(stredf)) {
                     sendNotif();
                     sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
@@ -108,27 +93,19 @@ import java.util.concurrent.TimeUnit;
                     editor.commit();
                 }
             }
-            //sharedPreferences.edit().clear().commit();
         }
 
         void sendNotif() {
-            // 1-я часть
             Notification notif = new Notification(R.drawable.ic_launcher, "Text in status bar",
                     System.currentTimeMillis());
-
-            // 3-я часть
-            Intent intent = new Intent(this, Popitka.class);
+            Intent intent = new Intent(this, ActivityMain.class);
             intent.setAction("show_news");
             intent.putExtra("title", artList.get(0).getTitle());
             intent.putExtra("uri", artList.get(0).getUri());
             PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
             PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0); // Подробное описание смотреть в UPD к статье
             RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.note);
-
-            // 2-я часть
             notif.setLatestEventInfo(this, "Notification's title", "Notification's text", pIntent);
-
-            // ставим флаг, чтобы уведомление пропало после нажатия
             notif.flags |= Notification.FLAG_AUTO_CANCEL;
             Bitmap bitmap=null;
             try {
@@ -137,19 +114,15 @@ import java.util.concurrent.TimeUnit;
                 e.printStackTrace();
             }
             if (bitmap != null)
-                contentView.setImageViewBitmap(R.id.image, bitmap); // Привязываем нашу картинку к ImageView в разметке уведомления
+                contentView.setImageViewBitmap(R.id.image, bitmap);
             else
-                contentView.setImageViewResource(R.id.image, R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main); // Привязываем нашу картинку к ImageView в разметке уведомления
+                contentView.setImageViewResource(R.id.image, R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main);
 
+            contentView.setTextViewText(R.id.text, artList.get(0).getTitle());
 
-            contentView.setTextViewText(R.id.text, artList.get(0).getTitle()); // Привязываем текст к TextView в нашей разметке
-
-            notif.contentIntent = contentIntent; // Присваиваем contentIntent нашему уведомлению
-            notif.contentView = contentView; // Присваиваем contentView нашему уведомлению
-
-            // отправляем
+            notif.contentIntent = contentIntent;
+            notif.contentView = contentView;
             nm.notify(1, notif);
-
         }
 
 

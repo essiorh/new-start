@@ -1,10 +1,15 @@
-package com.example.volleyapp2;
+package com.example.volleyapp2.methods;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
 import com.android.volley.toolbox.ImageLoader;
 
+/**
+ * This class store the LruCache as Bitmap
+ * @see android.support.v4.util.LruCache
+ * @author ilia
+ */
 public class BitmapLruCache extends LruCache<String, Bitmap>
         implements ImageLoader.ImageCache {
 

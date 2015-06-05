@@ -1,6 +1,4 @@
-package com.example.volleyapp2;
-
-import java.util.Date;
+package com.example.volleyapp2.adapters;
 
 public class Article {
     private String url;
