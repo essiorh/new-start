@@ -39,8 +39,11 @@ import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
+ * @see android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener
+ * @see android.support.v4.app.Fragment
+ * @author ilia
  */
-public class MainActivityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class MainActivityFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     public static final String PREF = "MyPref";
     public static final String DEF_VALUE = "";
     public static final String SHOW_NEWS = "show_news";
@@ -56,21 +59,19 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
     public static final String HREF = "href";
     public static final String FORMAT = "/page%d/";
     public static final String URL = "url";
-
-    final String SAVED_FIRST_NEW = "saved_first_new";
+    public static final String SAVED_FIRST_NEW = "saved_first_new";
 
     private ArticleAdapter mAdapter;
-    private SwipeRefreshLayout  swipeRefreshLayout;
-    private List<Article> Articles=new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private List<Article> Articles = new ArrayList<>();
     private SharedPreferences sharedPreferences;
     private PendingIntent pendingIntent;
-    private         ListView listView;
+    private ListView listView;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mAdapter = new ArticleAdapter(getActivity());
-        listView = (ListView) getView().findViewById(R.id.list1);
         listView.setAdapter(mAdapter);
         loadNewArtsToAdapter();
         startNotification();
@@ -79,7 +80,8 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view	= inflater.inflate(R.layout.fragment_popitka, container, false);
+        View view = inflater.inflate(R.layout.main_fragment, container, false);
+        listView = (ListView) view.findViewById(R.id.list1);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -107,10 +109,10 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
         });
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         swipeRefreshLayout.setOnRefreshListener(this);
-        Intent intent=getActivity().getIntent();
-        String title=intent.getAction();
+        Intent intent = getActivity().getIntent();
+        String title = intent.getAction();
         if (!title.equals(null)) {
-            if (title.equals(SHOW_NEWS)){
+            if (title.equals(SHOW_NEWS)) {
                 Intent i = new Intent(getActivity(), ActivityPageArt.class);
                 i.putExtra(URI, intent.getStringExtra(URI));
                 i.putExtra(TITLE, intent.getStringExtra(TITLE));
@@ -119,12 +121,12 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
         }
         return view;
     }
+
     @Override
     public void onResume() {
         super.onResume();
-
-
     }
+
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
@@ -158,25 +160,23 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
         VolleyApplication.getInstance().getRequestQueue().add(stringRequest);
     }
 
-
-
-
     /**
      * Use this method when you need to start notification with new news
      */
     private void startNotification() {
         Intent myIntent = new Intent(getActivity(), MyReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
-        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC, SystemClock.elapsedRealtime(), 10000, pendingIntent);
     }
+
     /**
      * This method loads new articles to your list view
      */
     private void loadNewArtsToAdapter() {
         String thisRequest = getString(R.string.adress);
-        if (Articles.size() >9) {
-            int multiplicity = Articles.size() / 10+1;
+        if (Articles.size() > 9) {
+            int multiplicity = Articles.size() / 10 + 1;
             thisRequest += String.format(FORMAT, multiplicity);
         }
         StringRequest request = new StringRequest(Request.Method.GET, thisRequest,
@@ -197,25 +197,26 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
                 }
         );
         VolleyApplication.getInstance().getRequestQueue().add(request);
-
     }
 
     /**
      * This method parses HTML string and return article list
+     *
      * @param data HTML string for parsing
      * @return article list
      */
     private List<Article> myParser(String data) {
         Document doc = Jsoup.parse(data);
-        List<Article> NewArts=new ArrayList<>();
+        List<Article> NewArts = new ArrayList<>();
         Elements metaElements = doc.getElementsByTag(ARTICLE);
         for (Element thisArt : metaElements) {
             String title = thisArt.select(H2).text();
             String url;
-            if (!thisArt.getElementsByClass(PREVIEW).isEmpty())
+            if (!thisArt.getElementsByClass(PREVIEW).isEmpty()) {
                 url = thisArt.select(IMG).attr(SRC);
-            else
-                url= DEF_VALUE;
+            } else {
+                url = DEF_VALUE;
+            }
             String dt = thisArt.select(TIME).text();
             String uri = thisArt.select(H2).select(A).attr(HREF);
             Article art = new Article(url, title, dt, uri);
@@ -223,6 +224,4 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
         }
         return NewArts;
     }
-
-
 }

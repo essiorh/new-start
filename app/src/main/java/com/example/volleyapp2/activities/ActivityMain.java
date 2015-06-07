@@ -17,7 +17,7 @@ public class ActivityMain extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_popitka);
+        setContentView(R.layout.main_activity);
         Intent intent=new Intent(this,MyService.class);
         startService(intent);
     }
@@ -25,7 +25,7 @@ public class ActivityMain extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_popitka, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 

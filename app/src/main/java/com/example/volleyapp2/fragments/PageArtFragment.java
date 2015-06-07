@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -28,7 +27,6 @@ import com.example.volleyapp2.activities.ActivityPageArt;
 import com.example.volleyapp2.R;
 import com.example.volleyapp2.methods.VolleyApplication;
 import com.squareup.picasso.Picasso;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -64,8 +62,9 @@ public class PageArtFragment extends Fragment {
         uri = intent.getStringExtra(MainActivityFragment.URI);
         titleView.setText(intent.getStringExtra(MainActivityFragment.TITLE));
         ActivityPageArt rod = (ActivityPageArt) getActivity();
-        if (rod != null)
+        if (rod != null) {
             rod.setTitle(intent.getStringExtra(MainActivityFragment.TITLE));
+        }
         leadArticleToHTMLTextView();
         return view;
     }
@@ -74,43 +73,33 @@ public class PageArtFragment extends Fragment {
      * This method loads article to html text view
      */
     private void leadArticleToHTMLTextView() {
-        StringRequest getReq    = new StringRequest(Request.Method.GET, uri
-                , new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String data) {
-                        Document doc = Jsoup.parse(data);
-                        String text = doc.select(QUERY).html();
-                        Spanned spanned = Html.fromHtml(text,
-                                new Html.ImageGetter() {
-                                    @Override
-                                    public Drawable getDrawable(String source) {
-                                        return getDrawable(source);
-                                    }
-                                }, null);
-                        htmlTextView.setText(spanned);
-                    }
-                }, new Response.ErrorListener()
-                    {
-                        @Override
-                        public void onErrorResponse(VolleyError error)
-                        {
-                }});
+        StringRequest getReq = new StringRequest(Request.Method.GET
+                , uri
+                , new Response.Listener<String>() {
+            @Override
+            public void onResponse(String data) {
+                Document doc = Jsoup.parse(data);
+                String text = doc.select(".topic-content.text").html();
+                Spanned spanned = Html.fromHtml(text,
+                        new Html.ImageGetter() {
+                            @Override
+                            public Drawable getDrawable(String source) {
+                                LevelListDrawable d = new LevelListDrawable();
+                                Drawable empty = getResources().getDrawable(R.drawable.abc_btn_check_material);
+                                d.addLevel(0, 0, empty);
+                                d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
+                                new ImageGetterAsyncTask(getActivity(), source, d).execute(htmlTextView);
+                                return d;
+                            }
+                        }, null);
+                htmlTextView.setText(spanned);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
         VolleyApplication.getInstance().getRequestQueue().add(getReq);
-    }
-
-    /**
-     * Get drawable from source
-     * @param source Needs to get drawable
-     * @return True drawable from source
-     */
-    private Drawable getDrawable(String source) {
-        LevelListDrawable d = new LevelListDrawable();
-        Drawable empty = getResources().getDrawable(R.drawable.abc_btn_check_material);
-        d.addLevel(0, 0, empty);
-        d.setBounds(0, 0, empty.getIntrinsicWidth(), empty.getIntrinsicHeight());
-        new ImageGetterAsyncTask(getActivity(), source, d).execute(htmlTextView);
-        return d;
     }
 
     /**
