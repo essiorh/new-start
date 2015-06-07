@@ -10,8 +10,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -19,14 +19,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.volleyapp2.activities.ActivityPageArt;
 import com.example.volleyapp2.R;
+import com.example.volleyapp2.activities.ActivityPageArt;
 import com.example.volleyapp2.methods.VolleyApplication;
 import com.squareup.picasso.Picasso;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -104,11 +106,11 @@ public class PageArtFragment extends Fragment {
 
     /**
      * This class extends AsyncTask and downloads for you an image in background
-     * @see android.os.AsyncTask
+     *
      * @author ilia
+     * @see android.os.AsyncTask
      */
-    class ImageGetterAsyncTask extends AsyncTask<TextView, Void, Bitmap>
-    {
+    class ImageGetterAsyncTask extends AsyncTask<TextView, Void, Bitmap> {
         private LevelListDrawable levelListDrawable;
         private Context context;
         private String source;
@@ -116,8 +118,9 @@ public class PageArtFragment extends Fragment {
 
         /**
          * Constructor for {@link #ImageGetterAsyncTask(Context, String, LevelListDrawable)}
-         * @param context this is your context
-         * @param source source of your
+         *
+         * @param context           this is your context
+         * @param source            source of your
          * @param levelListDrawable level your future drawable
          */
         public ImageGetterAsyncTask(Context context, String source, LevelListDrawable levelListDrawable) {
@@ -153,5 +156,4 @@ public class PageArtFragment extends Fragment {
         }
     }
 }
-
 

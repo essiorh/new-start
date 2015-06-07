@@ -7,7 +7,11 @@ import android.view.MenuItem;
 
 import com.example.volleyapp2.R;
 
-
+/**
+ * This activity is to display the fragment with article
+ * @see android.support.v7.app.AppCompatActivity
+ * @author ilia
+ */
 public class ActivityPageArt extends AppCompatActivity {
 
     @Override

@@ -11,8 +11,16 @@ import android.view.MenuItem;
 import com.example.volleyapp2.R;
 import com.example.volleyapp2.background.MyService;
 
-
+/**
+ * This is the Main Activity. It is needed to display a list of news
+ * @see android.support.v7.app.AppCompatActivity
+ * @author ilia
+ */
 public class ActivityMain extends AppCompatActivity {
+
+    private static final String stringToTestNotification = "ololo";
+    private static final String MY_PREF = "MyPref";
+    private static final String SAVED_FIRST_NEW = "saved_first_new";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +37,14 @@ public class ActivityMain extends AppCompatActivity {
         return true;
     }
 
-    /**
-     *
-     * @param item
-     * @return
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            String SAVED_FIRST_NEW = "saved_first_new";
             SharedPreferences sharedPreferences;
-            sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+            sharedPreferences = getSharedPreferences(MY_PREF, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(SAVED_FIRST_NEW, "ololo");
+            editor.putString(SAVED_FIRST_NEW, stringToTestNotification);
             editor.commit();
             return true;
         }

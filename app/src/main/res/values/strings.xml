@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">GoodLine News</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Text notification</string>
     <string name="title_activity_page_art">Page art activity</string>
     <string name="title_activity_main">Main activity</string>
     <string name="adress">http://live.goodline.info/guest</string>

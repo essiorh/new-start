@@ -5,10 +5,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +20,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.volleyapp2.R;
+import com.example.volleyapp2.activities.ActivityPageArt;
 import com.example.volleyapp2.adapters.Article;
 import com.example.volleyapp2.adapters.ArticleAdapter;
 import com.example.volleyapp2.adapters.InfiniteScrollListener;
 import com.example.volleyapp2.background.MyReceiver;
-import com.example.volleyapp2.activities.ActivityPageArt;
-import com.example.volleyapp2.R;
 import com.example.volleyapp2.methods.VolleyApplication;
 
 import org.jsoup.Jsoup;
@@ -167,7 +167,7 @@ public class MainActivityFragment extends Fragment implements SwipeRefreshLayout
         Intent myIntent = new Intent(getActivity(), MyReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, myIntent, 0);
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC, SystemClock.elapsedRealtime(), 10000, pendingIntent);
+        alarmManager.setRepeating(AlarmManager.RTC, SystemClock.elapsedRealtime(), 1000, pendingIntent);
     }
 
     /**

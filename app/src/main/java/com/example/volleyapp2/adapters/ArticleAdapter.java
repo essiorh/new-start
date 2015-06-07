@@ -15,8 +15,17 @@ import com.example.volleyapp2.methods.VolleyApplication;
 
 import java.util.List;
 
+/**
+ * Adapter for store the article list
+ * @see android.widget.ArrayAdapter
+ * @author ilia
+ */
 public class ArticleAdapter extends ArrayAdapter<Article> {
-    private ImageLoader mImageLoader;
+    private         ImageLoader mImageLoader;
+    private         TextView textView;
+    private         TextView dateView;
+    private         NetworkImageView imageView;
+
     public ArticleAdapter(Context context) {
         super(context, R.layout.image_list_item);
         mImageLoader = new ImageLoader(VolleyApplication.getInstance().getRequestQueue(), new BitmapLruCache());
@@ -28,28 +37,30 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.image_list_item, parent, false);
         }
 
-        NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
-        TextView textView = (TextView) convertView.findViewById(R.id.text1);
-        TextView dateView = (TextView) convertView.findViewById(R.id.date1);
+        imageView = (NetworkImageView) convertView.findViewById(R.id.image1);
+        textView = (TextView) convertView.findViewById(R.id.text1);
+        dateView = (TextView) convertView.findViewById(R.id.date1);
         Article imageRecord = getItem(position);
 
-        if (imageRecord.getUrl() != "")
-
-                imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
-        else
-            imageView.setImageResource(R.drawable.reklama_goodline_priznana_nezakonnoy_thumb_main);
+        if (imageRecord.getUrl() != "") {
+            imageView.setImageUrl(imageRecord.getUrl(), mImageLoader);
+        } else {
+            imageView.setImageResource(R.drawable.goodline_picture);
+        }
         textView.setText(imageRecord.getTitle());
         dateView.setText(imageRecord.getDat());
         return convertView;
     }
 
+    /**
+     * This method merges new List objects with old article records
+     * @param objects new list objects which must unite
+     */
     public void swapArticleRecords(List<Article> objects) {
         clear();
 
-        for(Article object : objects) {
+        for (Article object : objects) {
             add(object);
         }
-
-
     }
 }
